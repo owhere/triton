@@ -12,6 +12,7 @@
 #include "triton/Dialect/TritonGPU/IR/Dialect.h"
 #include "triton/Dialect/TritonGPU/Transforms/Passes.h"
 #include "triton/Dialect/TritonGPU/Transforms/Utility.h"
+#include "triton/Tools/LayoutUtils.h"
 #include "triton/Tools/StrUtil.h"
 #include "llvm/ADT/ArrayRef.h"
 #include "llvm/ADT/SmallVector.h"
@@ -709,7 +710,7 @@ public:
     mlir::RewritePatternSet patterns(context);
     patterns.add<BlockedToMMA, DecomposeScaledBlocked>(context,
                                                        computeCapability);
-    if (applyPatternsAndFoldGreedily(m, std::move(patterns)).failed()) {
+    if (applyPatternsGreedily(m, std::move(patterns)).failed()) {
       signalPassFailure();
     }
     // Now that we have picked the mma type, decompose dot that are not natively
